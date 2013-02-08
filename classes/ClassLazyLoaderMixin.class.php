@@ -20,15 +20,18 @@ class ClassLazyLoaderMixin extends Mixin
   
   private static function autoload($class_name)
   {
+    W::readlock();
     foreach(self::$autoloads as $fpath)
     {
       $fname = $fpath."/{$class_name}.class.php";
       if(file_exists($fname))
       {
         require($fname);
+        W::unlock();
         return true;
       }
     }
+    W::unlock();
     return false;
   }
   
